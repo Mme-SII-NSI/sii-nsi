@@ -60,7 +60,8 @@ CREATE TABLE "competences_etudiant" (
 
 INSERT INTO "competences_etudiant" ("id", "nom", "prenom", "auth_user_id")
 SELECT id, nom, prenom, username_id
-FROM competences_utilisateur_old;
+FROM competences_utilisateur_old
+WHERE id <> 85;
 
 DROP TABLE "competences_utilisateur_old";
 
@@ -197,7 +198,8 @@ CREATE TABLE "competences_note_etudiant" (
 
 INSERT INTO "competences_note_etudiant" ("id", "note", "acquis", "date", "question_id", "etudiant_id")
 SELECT id, note, note, date_note, id_question_id, id_utilisateurN_id
-FROM competences_noteutilisateur_old;
+FROM competences_noteutilisateur_old
+WHERE id_utilisateurN_id <> 85;
 
 DROP TABLE "competences_noteutilisateur_old";
 

@@ -40,6 +40,7 @@ class Access:
 
 
     def creationOuMajNoteEtudiant(idEtudiant, idQuestion, note, acquis):
+        """Crée ou met a jour une note pour l'utilisateur"""
         question = Question.objects.get(id= idQuestion)
         etudiant = Etudiant.objects.get(id= idEtudiant)
         noteEtudiant = Note_Etudiant.objects.get_or_create(etudiant_id= etudiant.id, question_id= question.id)[0]
