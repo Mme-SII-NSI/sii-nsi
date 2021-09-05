@@ -1,0 +1,110 @@
+{% extends "competences/eval_generic.html" %}
+
+{% block content %}
+
+    {% load static %}
+    <div class="w3-rest" id="parent_point">
+        <form method="post" action="/competences/promotions/{{ promotion.id }}/activites/{{ activite.id }}/etudiants/{{ idEtudiant }}/validation/">
+            {% csrf_token %}
+            <table class="w3-table w3-hoverable w3-striped" style="margin-bottom: 60px;">
+
+                {% for question in questions %}
+
+                    <tr class="w3-center" id="myUL">
+                        <td >
+                            <h5><strong>{{ question }}</strong></h5>
+                        </td>
+                        <td>
+                            <img src="{% static "" %}{{question.detail_competence.competence.code}}.png" alt="My image" style="width: 30px;">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <table>
+                                {% for i in question.range.checks %}
+                                <tr><label class="w3-small">{{ i.index }}</label></tr>
+                                <tr><input onchange="changeScore({{ question.id }}, {{ question.point }}, {{ i.index }})" style="width: 30px;" 
+                                    class="point w3-radio" type="radio" name="point{{ question.id }}" value="{{ i.index }}" {{ i.checked }}></tr>
+                                {% endfor %}
+                            </table>
+                        </td>
+                        <td>
+                            <p>
+                                <input style="display: none;" type="checkbox" name="ref" value="{{ question.id }}" checked>
+                                <input onchange="calcacquis()" id="{{ question.id }}" class="acquis w3-check" type="checkbox" name="valid{{ question.id }}" value="1" {{ question.acquis }}>
+                                <label class="w3-small">Acquis</label>
+                            </p>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </table>
+            <div class="w3-row" style="position: fixed; left: 0px; top: calc(100vh - 50px); width: 100%;">
+                <div class="w3-col m12 l12">
+                    <div />
+                    <button class="w3-button w3-block w3-teal w3-xlarge" type="submit">
+                        <span>Valider<span>
+                        <span style="margin-left: 15px;">note:</span>
+                        <span id="score"></span>
+                        <span>/</span>
+                        <span id="totalScore"></span>
+                        <span style="margin-left: 15px;">acquis:</span>
+                        <span id="acquis"></span>
+                        <span>/</span>
+                        <span id="totalAcquis"></span>
+                    </button>
+                </div>
+
+            </div>
+        </form>
+    </div>
+
+    <script>
+
+        function calcscore() {
+            var score = 0;
+            var total = 0;
+            var parentDOM = document.getElementById("parent_point");
+            var notes = parentDOM.getElementsByClassName("point");
+            for (let i = 0 ; i < notes.length ; i++) {
+                if  (notes[i].checked == true){
+                    score += parseInt(notes[i].value)
+                }
+                if (notes[i].value !== '0') {
+                    total += 1;
+                }
+            }
+            document.getElementById("score").innerHTML = score;
+            document.getElementById("totalScore").innerHTML = total;
+        }
+
+         function calcacquis() {
+            var acquis = 0;
+            var total = 0;
+            var parentDOM = document.getElementById("parent_point");
+            var acquisElement = parentDOM.getElementsByClassName("acquis");
+            total = acquisElement.length;
+            for (let i = 0 ; i < acquisElement.length ; i++) {
+                if  (acquisElement[i].checked == true){
+                    acquis += 1
+                }
+            }
+            document.getElementById("acquis").innerHTML = acquis;
+            document.getElementById("totalAcquis").innerHTML = total;
+        }
+
+        function changeScore(idQuestion, note, value) {
+            var check = document.getElementById(idQuestion);
+            check.checked = value == note;
+            calcscore();
+            calcacquis();
+        }
+
+        window.onload = function() {
+            selectionneEtudiant();
+            calcscore();
+            calcacquis();
+        }
+
+    </script>
+
+{% endblock %}

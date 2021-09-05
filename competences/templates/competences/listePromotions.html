@@ -1,0 +1,27 @@
+{% extends "competences/base_generic.html" %}
+
+{% block title %}
+    <h4><strong>Choix de la promotion</strong><h4>
+{% endblock %}
+
+{% block content %}
+
+<div class="w3-container">
+ 
+    {% for classe, promos  in promotions.items %}
+        <div class="w3-third">
+            <h4 class="w3-blue-grey w3-padding-small"><strong>{{ classe }}</strong></h4>
+            <ul class="w3-ul w3-white">
+                {% for promo in promos %}
+                    <li>
+                        <button class="w3-button w3-block w3-light-gray" onclick="redirect('{{ promo.id }}')">
+                            {{ promo.annee }}
+                        </button>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+    {% endfor %}
+</div>
+
+{% endblock %}

@@ -1,0 +1,225 @@
+{% extends "competences/base_generic.html" %}
+
+{% block title %}
+  <h4><strong>Bienvenue {{ etudiant.prenom }} {{ etudiant.nom }} - Etat de vos compétences</strong></h4>
+{% endblock %}
+
+{% comment %} <br> {% endcomment %}
+{% comment %} {% for matiere, objet in dic_matiere.items %}
+{% if matiere == 'SII' %}
+<button class="w3-button w3-yellow w3-border w3-medium"><a href="http://sii-nsi.ovh/sii/sommaire_devoirs.html">
+  Accès aux évaluations de {{matiere}}
+</a></button>
+</div> {% endcomment %}
+{% comment %} {% endif %}
+{% endfor %} {% endcomment %}
+{% comment %} {% endblock %} {% endcomment %}
+
+{% block sidebar %}
+
+    <div class="w3-container">
+        <div style="position: fixed;">
+            <h4>Choix de la promotion</h4>
+        </div>
+        <ul id="promotions" class="w3-ul" style="margin-top: 45px; overflow-y: scroll; height: calc(100vh - 175px);">
+             {% for promotion in promotions %}
+            <li id="{{ promotion.id }}"><a class="w3-button" href="javascript:void(0)" onclick="display('{{ promotion.id }}')">{{ promotion }}</a></li>
+            {% endfor %}
+        </ul>
+    </div>
+
+{% endblock %}
+
+{% block content %}
+  <table class="w3-table w3-striped w3-border">
+  <tr>
+    {% comment %} <th>Thème</th> {% endcomment %}
+    <th style="width: 10px;"></th>
+    <th style="width: 10vw;">Compétences</th>
+    <th>DS</th>
+    {% comment %} <th>Détails</th> {% endcomment %}
+  </tr>
+  {% for theme, competences in dic.items %}
+    {% for competence, details in competences.items %}      
+      {% for detail in details %}
+        <tr>
+          <td class="theme{{theme.id}}">
+            <div class="w3-tooltip">
+              <span class="w3-text w3-tag w3-round-xlarge w3-xlarge" style="position:absolute;left:0;bottom:20px">
+                  {{theme.theme}}
+              </span>
+              
+              <div style="width: 100%; height:100%; visibility: hidden;">+</div>
+             </div>
+          </td>
+          <td>
+            <div class="w3-tooltip">
+              <span class="w3-text w3-tag w3-round-xlarge w3-xlarge" style="position:absolute;left:0;bottom:20px">
+                {{ detail.titre }}
+              </span>
+              <span>{{ competence.code }} - {{ detail.code }}</span>
+            </div>
+          </td>
+          <td></td>
+        </tr>
+      {% endfor %}  
+    {% endfor %}
+  {% endfor %}
+
+  <style type="text/css">
+    .theme1 {
+      background-color: #FFB9B3;
+    }
+    .theme2 {
+      background-color: #ACECD5;
+    }
+    .theme3 {
+      background-color: #FFB27F;
+    }
+    .theme4 {
+      background-color: #FFF9AA;
+    }
+    .theme5 {
+      background-color: #F7A3FF;
+    }
+    .theme6 {
+      background-color: #93DDFF;
+    }
+  </style>
+{% comment %}<div class="w3-container w3-center">
+  <!-- {% for matiere, objet in dic_matiere.items %}
+  {{ matiere }}
+  {% for notesParCompetences in objet %}
+  {{ notesParCompetences.competence }}
+  {% for element in notesParCompetences.notesParSousCompetences %}
+  {{ element.sousCompetence }}
+  {{ element.noteParSousCompetence }}/{{ element.noteRefTotal }}
+  {% for note in element.notesParThemes %}
+  {{ note.theme }} : {{ note.note }} / {{ note.noteRef }}
+  {% endfor %}
+  {% endfor %}
+  {% endfor %}
+  {% endfor %} -->
+   <div id="deck_eleve" class="cartes">
+    {% for matiere, objet in dic_matiere.items %}
+    <h3>{{ matiere }}</h3>
+    {% load static %}
+    <div class="w3-row w3-center-align">
+      <div class="w3-col" style="width: 10%;">
+        <img src="{% static "" %}Action{{ matiere }}1.png" alt="My image" style="width: 112px;">
+      </div>
+      <div class="w3-col" style="width: 10%;">
+        <img src="{% static "" %}Action{{ matiere }}2.png" alt="My image" style="width: 112px;">
+      </div>
+      <div class="w3-col" style="width: 10%;">
+        <img src="{% static "" %}Action{{ matiere }}3.png" alt="My image" style="width: 112px;">
+      </div>
+      <div class="w3-col" style="width: 10%;">
+        <img src="{% static "" %}Action{{ matiere }}4.png" alt="My image" style="width: 112px;">
+      </div>
+      <div class="w3-col" style="width: 10%;">
+        <img src="{% static "" %}Action{{ matiere }}5.png" alt="My image" style="width: 112px;">
+      </div>
+      <div class="w3-col" style="width: 10%;">
+        <img src="{% static "" %}Action{{ matiere }}6.png" alt="My image" style="width: 112px;">
+      </div>
+      <div class="w3-col" style="width: 10%;">
+        <img src="{% static "" %}Action{{ matiere }}7.png" alt="My image" style="width: 112px;">
+      </div>
+      <div class="w3-col" style="width: 10%;">
+        <img src="{% static "" %}Action{{ matiere }}8.png" alt="My image" style="width: 112px;">
+      </div>
+      <!-- <div class="w3-col" style="width: 10%;">
+        <img src="{% static "" %}Action{{ matiere }}9.png" alt="My image" style="width: 112px;">
+      </div> -->
+      <div class="w3-col" style="width: 10%;">
+        <img src="{% static "A" %}ction{{ matiere }}10.png" alt="My image" style="width: 112px;">
+      </div>
+    </div>
+    
+    <br>
+
+    {% for notesParCompetences in objet %}
+
+    <button onclick="myFunction('{{ notesParCompetences.competence }}')"
+      class="w3-button w3-block w3-left-align w3-light-grey w3-border w3-border-grey w3-hover-border-blue">
+    {{ notesParCompetences.competence }}</button>
+    <div id="{{ notesParCompetences.competence }}" class="w3-container w3-hide">
+      {% load static %}
+      <div class="w3-row">
+        {% for element in notesParCompetences.notesParSousCompetences %}
+        <div class="w3-col m{{ notesParCompetences.longueur }} l{{ notesParCompetences.longueur }} ">
+          <div class="w3-center">
+            {% if element.afficher %}
+            {% if element.evalueTP and matiere == "SII"  %}
+            <em>En TP uniquement (PCSI / 2ème semestre MPSI)</em> 
+            {% endif %}
+            <img src="{% static "" %}{{matiere}}Carte{{element.sousCompetence}}.png" alt="My image" style="width: 95px;">
+
+            {% for note in element.notesParThemes %}
+            <div class="w3-left-align w3-small">
+              {% if note.evalue %}
+              <strong>{{note.theme}}</strong> sur {{note.noteRef}} :
+              <div class="w3-light-grey" style="width: 80%;">
+                <div class="w3-blue w3-round w3-tiny w3-center" style="height:15px;width: {{note.rapport}}% ;">
+                  {{note.note}}</div>
+              </div>
+              {% endif %}
+            </div>
+
+            {% endfor %}
+            {% else %}
+              <!-- {% if element.validationTotale %}
+              <img src=" {% static "" %}Valide{{note.sousCompetence}}.png" alt="My image" style="width: 95px;">
+              {% else %} -->
+            {% if element.evalueTP and matiere == "SII" %}
+            <em>En TP uniquement (PCSI / 2ème semestre MPSI)</em>
+            {% endif %}
+            <img src=" {% static "" %}{{matiere}}Verso{{element.sousCompetence}}.png" alt="My image" style="width: 95px;">
+            
+            {% for note in element.notesParThemes %}
+            <div class="w3-left-align w3-small">
+              {% if note.evalue %}
+              <strong>{{note.theme}}</strong> sur {{note.noteRef}} :
+              <div class="w3-light-grey" style="width: 80%;">
+                <div class="w3-blue w3-round w3-tiny w3-center" style="height:15px;width: {{note.rapport}}% ;">
+                  {{note.note}}</div>
+              </div>
+              {% endif %}
+            </div>
+            {% endfor %}
+            {% endif %}
+            {% endif %}
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+    <br>
+    {% endfor %}
+    {% endfor %}
+  </div>
+</div> {% endcomment %}
+
+
+{% comment %} <script>
+  function ouverture(etat) {
+    var i;
+    var x = document.getElementsByClassName("cartes");
+    for (i = 0; i < x.length; i++) {
+      x[i].style.display = "none";
+    }
+    document.getElementById(etat).style.display = "block";
+  }
+
+  function myFunction(id) {
+    var x = document.getElementById(id);
+    if (x.className.indexOf("w3-show") == -1) {
+      x.className += " w3-show";
+    } else {
+      x.className = x.className.replace(" w3-show", "");
+    }
+  } {% endcomment %}
+</script>
+
+{% endblock %}

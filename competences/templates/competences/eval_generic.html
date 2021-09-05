@@ -1,0 +1,74 @@
+{% extends "competences/base_generic.html" %}
+
+{% block link %}
+    <a class="w3-button w3-round w3-white w3-small" style="margin-top: 5px;"
+        href="/competences/promotions/">{{ promotion.classe.classe }} {{ promotion.annee }}</a>
+    <a class="w3-button w3-round w3-white w3-small" style="margin-top: 5px;" 
+        href="/competences/promotions/{{ promotion.id }}/">{{ activite.code }}</a>
+{% endblock %}
+
+{% block title %}
+    <h4><strong>Evaluations des compétences</strong><h4>
+{% endblock %}
+
+{% block sidebar %}
+
+    <div class="w3-container">
+        <div style="position: fixed;">
+            <h4>Choix de l'élève</h4>
+            <input class="w3-input w3-border w3-padding" type="text" placeholder="Recherche élève..." id="evalInput"
+                onkeyup="search_etudiant_eval()">
+        </div>
+        <ul class="w3-ul" style="margin-top: 85px; overflow-y: scroll; height: calc(100vh - 175px);" id="evalUL">
+            {% for etudiant in etudiantActivite %}
+                <li id="{{ etudiant.id }}"><a class="w3-button"
+                    href="/competences/promotions/{{ promotion.id }}/activites/{{ activite.id }}/etudiants/{{ etudiant.id }}">
+                    {% if etudiant.evalue %}<i class="glyphicon glyphicon-ok"></i>{% endif %}
+                    {{ etudiant }}</a></li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <script>
+        function search_etudiant_eval() {
+            const input = document.getElementById("evalInput");
+            const filter = input.value.toUpperCase();
+            const ul = document.getElementById("evalUL");
+            const li = ul.getElementsByTagName("li");
+            for (i = 0; i < li.length; i++) {
+                txtValue = li[i].textContent || li[i].innerText;
+                if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                    li[i].style.display = "";
+                } else {
+                    li[i].style.display = "none";
+                }
+            }
+        }
+
+        function selectionneEtudiant() {
+            var url = window.location.pathname;
+            if (url.endsWith('/')) {
+                url = url.slice(0, -1);
+            }
+            const etudiantId = url.slice(url.lastIndexOf('/') + 1)
+            const li = document.getElementById(etudiantId);
+            if (li) {
+                const a = li.getElementsByTagName("a");
+                url = url.slice(0, url.lastIndexOf('/'));
+                a[0].classList.add('w3-teal');
+                a[0].href = url.slice(0, url.lastIndexOf('/'));
+                li.scrollIntoView(true);
+            }
+        }
+
+        window.onload = function() {
+            selectionneEtudiant();
+        };
+
+    </script>
+
+{% endblock %}
+
+{% block content %}
+
+{% endblock %}

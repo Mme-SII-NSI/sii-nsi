@@ -1,0 +1,103 @@
+{% extends "competences/base_generic.html" %}
+
+{% block link %}
+    <a class="w3-button w3-round w3-white w3-small" style="margin-top: 5px;"
+        href="/competences/promotions/">{{ promotion.classe.classe }} {{ promotion.annee }}</a>
+{% endblock %}
+
+{% block title %}
+    <h4><strong>Evaluations des compétences</strong><h4>
+{% endblock %}
+
+{% block sidebar %}
+
+    <div class="w3-container">
+        <div style="position: fixed;">
+            <h4>Choix de l'activité</h4>
+        </div>
+        <ul id="themes" class="w3-ul" style="margin-top: 45px; overflow-y: scroll; height: calc(100vh - 175px);" id="bilanUL">
+             {% for key, values in activites.items %}
+            <li id="{{ key }}"><a class="w3-button" href="javascript:void(0)" onclick="display('{{ key }}')">{{ key }}</a></li>
+            {% endfor %}
+        </ul>
+    </div>
+
+{% endblock %}
+
+{% block content %}
+
+    <div id="containerActivite" style="display: None;">
+        {% for key, values in activites.items %}
+            <div id="{{ key }}" class="w3-container" >                
+                <h4 class="w3-blue-grey w3-padding-small"><strong>Devoirs</strong></h4>
+                <div>
+                    <ul class="w3-ul w3-left-align">
+                        {% for v in values.devoirs %}
+                            <li><a class="w3-bar-item w3-button w3-padding-small" href="activites/{{ v.id }}/">{{ v.code }} {{v.titre }}</a></li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                <h4 class="w3-blue-grey w3-padding-small"><strong>Exercices</strong></h4>
+                <div >
+                    <ul class="w3-ul w3-left-align">
+                        {% for v in values.autres %}
+                            <li><a class="w3-bar-item w3-button w3-padding-small" href="activites/{{ v.id }}/">{{ v.code }} {{v.titre }}</a></li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+    <div id="containerDevoir">
+        <h4 class="w3-blue-grey w3-padding-small"><strong>Devoirs</strong></h4>
+        <ul class="w3-ul w3-left-align">
+            {% for devoir in devoirs %}
+                <li><a class="w3-bar-item w3-button w3-padding-small" href="activites/{{ devoir.id }}/">{{ devoir.code }} {{devoir.titre }}</a></li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <script>
+
+        var themeSelectionne = '';
+
+        function gestionSelectionList(key, deselectionne) {
+            const ul = document.getElementById("themes");
+            const lis = ul.getElementsByTagName("li");
+            for (i = 0; i < lis.length; i++) {
+                const a = lis[i].getElementsByTagName("a");
+                if (lis[i].id === key && !deselectionne) {
+                    a[0].classList.add('w3-teal');
+                } else {
+                    a[0].classList.remove('w3-teal');
+                }
+            }
+        }
+
+        function display(key) {
+            const deselectionne = themeSelectionne === key;
+            gestionSelectionList(key, deselectionne);
+            const containerDevoir = document.getElementById("containerDevoir");
+            const containerActivite = document.getElementById("containerActivite");
+            if (containerActivite && containerDevoir) {
+                containerActivite.style.display = deselectionne ? "None" : "";
+                containerDevoir.style.display = deselectionne ? "" :"None";
+                const activites = containerActivite.getElementsByTagName("div");
+                for (i = 0; i < activites.length; i++) {
+                    if (activites[i].className != "w3-container") {
+                        continue;
+                    }
+                    if (activites[i].id === key && !deselectionne) {
+                        activites[i].style.display = "";
+                    } else {
+                        activites[i].style.display = "none";
+                    }
+                 }
+            }
+            themeSelectionne = deselectionne ? '' : key;
+        }
+
+    </script>
+</div>
+
+{% endblock %}
