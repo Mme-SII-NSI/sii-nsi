@@ -1,17 +1,17 @@
 {% extends "competences/eval_generic.html" %}
 
 {% block content %}
-
+    {% load static %}
     <div class="w3-half">
         <table class="w3-table">
-            {% load static %}
             {% for question in questions %}
             <tr class="w3-ul w3-left-align w3-margin-left" id="myUL">
                 <td>
                     <h5><strong>{{ question }}</strong></h5>
                 </td>
                 <td>
-                    <img src="{% static "" %}{{ question.detail_competence.competence.code }}.png" alt="My image" style="width: 50px;">
+                    <img src="{% static "" %}images/{{ question.detail_competence.competence.code }}.png" 
+                         alt="{{ question.detail_competence.competence.code }}" style="width: 50px;">
                 </td>
                 {% if question.point > 0 %}
                 <td>

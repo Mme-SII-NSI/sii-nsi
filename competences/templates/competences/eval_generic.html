@@ -32,8 +32,7 @@
     <script>
         function search_etudiant_eval() {
             const input = document.getElementById("evalInput");
-            const filter = input.value.toUpperCase();
-            const ul = document.getElementById("evalUL");
+            const filter = input.value.toUpperCase();            
             const li = ul.getElementsByTagName("li");
             for (i = 0; i < li.length; i++) {
                 txtValue = li[i].textContent || li[i].innerText;
@@ -47,17 +46,21 @@
 
         function selectionneEtudiant() {
             var url = window.location.pathname;
+            if (url.lastIndexOf('etudiants') < 0) {
+                return;
+            }
             if (url.endsWith('/')) {
                 url = url.slice(0, -1);
             }
             const etudiantId = url.slice(url.lastIndexOf('/') + 1)
             const li = document.getElementById(etudiantId);
+            const ul = document.getElementById("evalUL");
             if (li) {
                 const a = li.getElementsByTagName("a");
                 url = url.slice(0, url.lastIndexOf('/'));
                 a[0].classList.add('w3-teal');
                 a[0].href = url.slice(0, url.lastIndexOf('/'));
-                li.scrollIntoView(true);
+                ul.scroll(0, li.offsetTop - ul.offsetTop - 50);
             }
         }
 

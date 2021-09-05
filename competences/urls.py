@@ -24,5 +24,4 @@ urlpatterns = [
     
     # Etudiants
     path("etudiants/<int:idEtudiant>/", bilan_perso, name="bilan_perso", ),
-
-] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+]

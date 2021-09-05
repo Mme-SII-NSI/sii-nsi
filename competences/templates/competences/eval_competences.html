@@ -15,7 +15,8 @@
                             <h5><strong>{{ question }}</strong></h5>
                         </td>
                         <td>
-                            <img src="{% static "" %}{{question.detail_competence.competence.code}}.png" alt="My image" style="width: 30px;">
+                            <img src="{% static "" %}images/{{question.detail_competence.competence.code}}.png" 
+                                 alt="{{question.detail_competence.competence.code}}" style="width: 30px;">
                         </td>
                     </tr>
                     <tr>

@@ -23,4 +23,4 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('competences/', include('competences.urls')),
     path('',  RedirectView.as_view(url='competences/')),
-]
+] + static(settings.STATIC_URL, document_root= settings.STATIC_ROOT)
