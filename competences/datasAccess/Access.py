@@ -1,15 +1,18 @@
-from competences.models.Etudiant_Promotion import Etudiant_Promotion
-from competences.models.Activite import Activite
-from competences.models.Programme import Programme
+from django.db.models.functions import Now
+from ..models.Etudiant_Promotion import Etudiant_Promotion
+from ..models.Activite import Activite
+from ..models.Programme import Programme
 from ..models.Question import Question
 from ..models.Theme import Theme
-from ..models.Etudiant import Etudiant
 from ..models.Promotion import Promotion
+from ..models.Note_Etudiant import Note_Etudiant
+from ..models.Etudiant import Etudiant
 from ..models.Competence import Competence
 from ..models.Detail_Competence import Detail_Competence
-from ..models.Note_Etudiant import Note_Etudiant
+from .Range import Range
+from .ActiviteDic import ActiviteDic
 
-class Core:
+class Access:
 
     def questionsDeLActivite(activite):
         """Renvoie un dictionnaire propre à l'activité code dont la clé est le numéro de la question, et la valeur est la compétence."""
@@ -34,6 +37,18 @@ class Core:
                     question.acquis = 'checked' if note.acquis == 1 else ''
                     break
         return questions
+
+
+    def creationOuMajNoteEtudiant(idEtudiant, idQuestion, note, acquis):
+        question = Question.objects.get(id= idQuestion)
+        etudiant = Etudiant.objects.get(id= idEtudiant)
+        noteEtudiant = Note_Etudiant.objects.get_or_create(etudiant_id= etudiant.id, question_id= question.id)[0]
+        noteEtudiant.note = int(note)
+        noteEtudiant.acquis = int(acquis)
+        noteEtudiant.etudiant_id = etudiant.id
+        noteEtudiant.question_id = question.id 
+        noteEtudiant.date = Now()
+        noteEtudiant.save()
 
     def listeDesPromotions():
         """Renvoie la liste des promotions (niveau et année)"""
@@ -95,6 +110,7 @@ class Core:
         """Renvoie un dictionnaire dont la clé est le thème et la valeur est la liste de l'ensemble des activités se rapportant au programme"""
 
         themes = Theme.objects.filter(programme_id= programme.id)
+        devoirs = set()
         liste_act = {}
         for theme in themes:
             liste_act[theme.theme] = ActiviteDic()
@@ -104,44 +120,14 @@ class Core:
             themes = set(activite.question_set.all().values_list("detail_competence__theme__theme"))
             for theme in themes:
                 liste_act[theme[0]].add(activite)
-                
-        return liste_act
+
+        devoirs = set(Access.flatten([activite.devoirs for (key, activite) in liste_act.items()]))
+        devoirs = sorted(devoirs, key=str, reverse= True)                
+        return liste_act, devoirs
 
     def flatten(t):
+        """Applati une liste de liste en liste"""
         return [item for sublist in t for item in sublist]
 
-class ActiviteDic:
-    
-    def __init__(self):#, activites):
-        self.devoirs = []
-        self.autres = []
-        # for activite in activites:
-        #     self.add(activite)
 
-    def add(self, activite):
-        if activite.estDevoir():
-            if activite not in self.devoirs:
-                self.devoirs.append(activite)
-                self.devoirs.sort(key=str, reverse= True)
-        else:
-            if activite not in self.autres:
-                self.autres.append(activite)
-                self.autres.sort(key=str)
-
-class Range:
-    def __init__(self, points):
-        self.checks = [Check(i) for i in range(0, points + 1)]
-
-    def setNote(self, note):
-        for check in self.checks:
-            if check.index == note:
-                check.checked = 'checked'
-            else:
-                check.checked = ''
-
-class Check:
-    
-    def __init__(self, i):
-        self.index = i
-        self.checked = 'checked' if i == 0 else ''
 

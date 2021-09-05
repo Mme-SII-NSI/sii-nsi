@@ -1,13 +1,13 @@
 from django.shortcuts import render
 from django.shortcuts import HttpResponseRedirect
-from .Core import Core
+from ..datasAccess.Access import Access
 
 # [Route("/competences/promotions")]
 def listePromotions(request):
     if not request.user.is_authenticated or not request.user.is_superuser:
         return HttpResponseRedirect('/competences/')
 
-    promotions = Core.listeDesPromotions()
+    promotions = Access.listeDesPromotions()
     context = {
         "promotions": promotions,
     }

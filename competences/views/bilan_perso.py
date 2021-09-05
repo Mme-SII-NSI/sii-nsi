@@ -5,7 +5,7 @@ from ..models.Promotion import Promotion
 from ..models.Etudiant_Promotion import Etudiant_Promotion
 from ..models.Etudiant_Promotion import Etudiant_Promotion
 from ..models.Detail_Competence import Detail_Competence
-from .Core import Core
+from ..datasAccess.Access import Access
 
 # [Route("/competences/etudiants/<int:idEtudiant>/")]
 def bilan_perso(request, idEtudiant):
@@ -17,7 +17,7 @@ def bilan_perso(request, idEtudiant):
     if request.user.id != etudiant.auth_user.id or not request.user.is_authenticated:
         return HttpResponseRedirect('/competences/')
 
-    promotionsDeEtudiant = Core.promotionsDeEtudiant(idEtudiant)
+    promotionsDeEtudiant = Access.promotionsDeEtudiant(idEtudiant)
     programme = promotionsDeEtudiant[0].programme
     detailCompetences = Detail_Competence.objects.filter(programme_id= programme.id)
 
